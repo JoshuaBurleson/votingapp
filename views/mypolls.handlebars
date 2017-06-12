@@ -1,0 +1,11 @@
+<div class="jumbotron">
+    <h1>My Polls</h1>
+    {{#if errors}}
+      {{#each errors}}
+        <div class="alert alert-danger">{{msg}}</div>
+      {{/each}}
+{{/if}}
+    {{#each polls}}
+    <p><a href="#">{{this}}</a></p>
+    {{/each}}
+    </div>

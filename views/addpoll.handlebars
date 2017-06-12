@@ -1,0 +1,21 @@
+<h2 class="page-header">Add New Poll</h2>
+{{#if errors}}
+      {{#each errors}}
+        <div class="alert alert-danger">{{msg}}</div>
+      {{/each}}
+{{/if}}
+<form method="post" action="/users/addpoll">
+   <div class="form-group">
+    <label>Title</label>
+    <input type="text" class="form-control" placeholder="Poll Title" name="title">
+  </div>
+  <div class="form-group">
+    <label>Option 1</label>
+    <input type="text" class="form-control" placeholder="Option 1" name="option1">
+  </div>
+   <div class="form-group">
+    <label>Option 2</label>
+    <input type="text" class="form-control" placeholder="Option 2" name="option2">
+    <br>
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>
