@@ -50,12 +50,6 @@
     <div class="w3-hide-large" style="margin-top:83px">
     </div>
 <div id="votes" style="display: none">{{votes}}</div>
-<div
-  class="fb-like"
-  data-share="true"
-  data-width="450"
-  data-show-faces="true">
-</div>
 <script>
   window.fbAsyncInit = function() {
     FB.init({
@@ -74,6 +68,10 @@
      fjs.parentNode.insertBefore(js, fjs);
    }(document, 'script', 'facebook-jssdk'));
 </script>
+  <div class="fb-share-button" 
+    data-href="https://pollappfcc.herokuapp.com/polls/{{title}}" 
+    data-layout="button_count">
+  </div>
 </body>
 <script type="text/javascript">
     google.charts.load("current", { packages: ["bar"] });
