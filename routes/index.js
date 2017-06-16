@@ -1,7 +1,7 @@
 const express = require('express');
     router = express.Router();
     mongo = require('mongodb').MongoClient;
-    dbPath = 'mongodb://user:password@ds115752.mlab.com:15752/voters';
+    dbPath = process.env.DBPATH;
 
 function ensureAuth(req, res, next){
     if(req.isAuthenticated()){
