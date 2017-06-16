@@ -5,6 +5,9 @@ var express = require('express');
     passport = require('passport');
     LocalStrategy = require('passport-local').Strategy;
 
+/[\?\=\/\.]+/g
+
+
 // Register
 router.get('/register', function(req,res){
     res.render('register');
@@ -30,7 +33,6 @@ router.post('/register', function(req,res){
     var errors = req.validationErrors();
     
     if(errors){
-        console.log(errors)
         res.render('register',{
             errors:errors
         });
@@ -90,10 +92,10 @@ router.get('/login', function(req,res){
 });
 
 //Attempt Login
-router.post('/login', passport.authenticate('local', {successRedirect : '/', failureRedirect : '/users/login', failureFlash : true}), 
-function(req, res) {
-    res.redirect('/');
-  });
+router.post('/login', passport.authenticate('local', {
+    successRedirect : '/dashboard', 
+    failureRedirect : '/users/login', 
+    failureFlash : true}));
 
 //Logout
 router.get('/logout', function(req,res, next){
@@ -104,7 +106,6 @@ router.get('/logout', function(req,res, next){
 
 //Retrieve User's Polls
 router.get('/mypolls', ensureAuth ,function(req, res) {
-    console.log(req.user.polls.length);
     var polls = req.user.polls//['this', 'and this', 'and this', 'and also this'];
     res.render('mypolls', {polls : polls});
   });
@@ -119,17 +120,17 @@ router.post('/addpoll', function(req,res){
     var title = req.body.title;
         option1 = req.body.option1;
         option2 = req.body.option2;
-
     //Validate form data
     req.checkBody('title', 'Title is required').notEmpty();
     req.checkBody('option1', 'Both options are required').notEmpty();
     req.checkBody('option2', 'Both options are required').notEmpty();
     var errors = req.validationErrors();
     if(errors){
-        console.log(errors)
         res.render('addpoll',{
             errors:errors
         });
+    }else if(/[\?\=\/\.]+/g.test(title)){
+        res.render('addpoll', {errors: [{param: "title", msg: "Title may not contain any of the following: ? = / .", value: ""}]})
     }else{
         //Create new poll using Poll schema from polls.js in models folder
         var newPoll = {title: title, options : {}}//****$%^$ */
@@ -147,7 +148,6 @@ router.post('/addpoll', function(req,res){
             //save updated polls array data to user db document
             User.update({username : req.user.username},{polls : userPollArr}, function(err, res){
             if(err) throw err;
-            console.log(res);
         });
             req.flash('success_msg', 'Poll successfully added');
             res.redirect('/users/mypolls');}
