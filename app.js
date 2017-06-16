@@ -10,7 +10,7 @@ var express = require('express');
     LocalStrategy = require('passport-local');
     mongo = require('mongodb');
     mongoose = require('mongoose');
-mongoose.connect('mongodb://user:password@ds115752.mlab.com:15752/voters');
+mongoose.connect(process.env.DBPATH);
 var db = mongoose.connection;
 
 var routes = (require('./routes/index'));
