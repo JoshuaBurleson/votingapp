@@ -1,12 +1,9 @@
-var express = require('express');
+const express = require('express');
     router = express.Router();
     User = require('../models/user');
     Poll = require('../models/polls');
     passport = require('passport');
     LocalStrategy = require('passport-local').Strategy;
-
-/[\?\=\/\.]+/g
-
 
 // Register
 router.get('/register', function(req,res){
@@ -15,7 +12,7 @@ router.get('/register', function(req,res){
 
 //Attempt New User Registration
 router.post('/register', function(req,res){
-    var name = req.body.name;
+    let name = req.body.name;
         email = req.body.email;
         username = req.body.username;
         password = req.body.password;
@@ -38,7 +35,7 @@ router.post('/register', function(req,res){
         });
     }else{
         //Create new user using User schema from user.js in models folder
-        var newUser = new User({
+        let newUser = new User({
             name : name,
             email : email,
             username : username,
@@ -87,9 +84,7 @@ passport.deserializeUser(function(id, done){
 ///End Passport Middleware
 
 //Login Page
-router.get('/login', function(req,res){
-    res.render('login');
-});
+router.get('/login', (req,res) => res.render('login'));
 
 //Attempt Login
 router.post('/login', passport.authenticate('local', {
@@ -106,25 +101,25 @@ router.get('/logout', function(req,res, next){
 
 //Retrieve User's Polls
 router.get('/mypolls', ensureAuth ,function(req, res) {
-    var polls = req.user.polls//['this', 'and this', 'and this', 'and also this'];
+    let polls = req.user.polls//['this', 'and this', 'and this', 'and also this'];
     res.render('mypolls', {polls : polls});
   });
 
 //Access Poll Adding Page
 router.get('/addpoll', ensureAuth, function(req, res){
-    res.render('addpoll')
+    res.render('addpoll');//('addpoll')
 });
 
 //Attempt to add poll
 router.post('/addpoll', function(req,res){
-    var title = req.body.title;
-        option1 = req.body.option1;
-        option2 = req.body.option2;
+    //console.log(req.body['options[]']);
+    let title = req.body.title;
+        options = req.body['options[]'];
     //Validate form data
     req.checkBody('title', 'Title is required').notEmpty();
-    req.checkBody('option1', 'Both options are required').notEmpty();
-    req.checkBody('option2', 'Both options are required').notEmpty();
-    var errors = req.validationErrors();
+    //req.checkBody('option1', 'At least two options are required').notEmpty();
+    //req.checkBody('option2', 'At least two options are required').notEmpty();
+    let errors = req.validationErrors();
     if(errors){
         res.render('addpoll',{
             errors:errors
@@ -133,9 +128,8 @@ router.post('/addpoll', function(req,res){
         res.render('addpoll', {errors: [{param: "title", msg: "Title may not contain any of the following: ? = / .", value: ""}]})
     }else{
         //Create new poll using Poll schema from polls.js in models folder
-        var newPoll = {title: title, options : {}}//****$%^$ */
-        newPoll.options[option1] = 0;
-        newPoll.options[option2] = 0;
+        let newPoll = {title: title, options : {}};
+        options.forEach(opt => newPoll.options[opt] = 0);
     //Attempt to add poll
     Poll.createPoll(newPoll, function(err, poll){
         //Handle error for poll title already existing in polls collection of db
@@ -143,7 +137,7 @@ router.post('/addpoll', function(req,res){
             res.render('addpoll',{errors :[{msg : 'Poll title already in use'}]});
             return;
         }else{
-            var userPollArr = req.user.polls; 
+            let userPollArr = req.user.polls; 
             userPollArr.push(title); //add poll title to user's current polls array
             //save updated polls array data to user db document
             User.update({username : req.user.username},{polls : userPollArr}, function(err, res){
@@ -153,6 +147,8 @@ router.post('/addpoll', function(req,res){
             res.redirect('/users/mypolls');}
         });
     }});
+
+router.get('/*',(req,res)=>res.render('404'));
 
 function ensureAuth(req, res, next){
     if(req.isAuthenticated()){

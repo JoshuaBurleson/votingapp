@@ -1,4 +1,4 @@
-var express = require('express');
+const express = require('express');
     path = require('path');
     cookieParser = require('cookie-parser');
     bodyParser = require('body-parser');
@@ -11,13 +11,13 @@ var express = require('express');
     mongo = require('mongodb');
     mongoose = require('mongoose');
 mongoose.connect(process.env.DBPATH);
-var db = mongoose.connection;
+let db = mongoose.connection;
 
-var routes = (require('./routes/index'));
+const routes = (require('./routes/index'));
     users = (require('./routes/users'));
 
 //Init App
-var app = express();
+const app = express();
 
 // Set View Engine
 app.set('views',path.join(__dirname,'views'));
@@ -46,7 +46,7 @@ app.use(passport.session());
 //Express Validator Middleware
 app.use(expressValidator({
   errorFormatter: function(param, msg, value) {
-      var namespace = param.split('.')
+      let namespace = param.split('.')
       , root    = namespace.shift()
       , formParam = root;
  
@@ -74,8 +74,8 @@ app.use(function(req,res,next){
 });
 
 //Route middleware
-app.use('/', routes);
 app.use('/users', users);
+app.use('/', routes);
 
 //Setup Port
 app.listen(process.env.PORT || 3000, function(){

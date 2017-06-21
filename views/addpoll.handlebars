@@ -5,17 +5,40 @@
       {{/each}}
 {{/if}}
 <form method="post" action="/users/addpoll">
+  <section>
    <div class="form-group">
     <label>Title</label>
     <input type="text" class="form-control" placeholder="Poll Title" name="title">
   </div>
   <div class="form-group">
     <label>Option 1</label>
-    <input type="text" class="form-control" placeholder="Option 1" name="option1">
+    <input type="text" class="form-control" placeholder="Option 1" name="options[]">
   </div>
    <div class="form-group">
     <label>Option 2</label>
-    <input type="text" class="form-control" placeholder="Option 2" name="option2">
+    <input type="text" class="form-control" placeholder="Option 2" name="options[]">
+  </div>
+  </section>
     <br>
-  <button type="submit" class="btn btn-primary">Submit</button>
+  <button id="submit" type="submit" class="btn btn-primary">Submit</button>
 </form>
+  <button id="addop" onclick="addOpt()">Add Option</button>
+<script
+  src="https://code.jquery.com/jquery-3.2.1.js"
+  integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="
+  crossorigin="anonymous"></script>
+<script>
+    function addOpt() {
+        let count = jQuery("section").children("div").length;
+        let newInput = `  
+        <div class="form-group">
+            <label>Option ${count}</label>
+            <input type="text" class="form-control" placeholder="Option ${count}" name="options[]">
+        </div>`;
+        jQuery("section").append(newInput);
+        }
+
+    jQuery("form").submit(function(onEvent) {
+        jQuery("#submit").prop("disabled", true);
+        });
+</script>
